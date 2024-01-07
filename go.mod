@@ -2,7 +2,10 @@ module inoxe_e/OOP_fizzbuzz
 
 go 1.21.5
 
-require github.com/stretchr/testify v1.8.4
+require (
+	github.com/stretchr/testify v1.8.4
+	go.uber.org/mock v0.4.0
+)
 
 require (
 	github.com/davecgh/go-spew v1.1.1 // indirect

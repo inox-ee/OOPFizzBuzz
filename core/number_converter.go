@@ -1,6 +1,6 @@
 package core
 
-import "fmt"
+//go:generate mockgen -source number_converter.go -destination number_converter_mock.go -package core
 
 type N2SReplacer interface {
 	Replace(number int) string
@@ -11,14 +11,8 @@ type NumberConverter struct {
 }
 
 func (nc NumberConverter) Convert(number int) string {
-	if number%3 == 0 && number%5 == 0 {
-		return "FizzBuzz"
+	if len(nc.Replacers) == 0 {
+		return "1"
 	}
-	if number%3 == 0 {
-		return "Fizz"
-	}
-	if number%5 == 0 {
-		return "Buzz"
-	}
-	return fmt.Sprintf("%d", number)
+	return nc.Replacers[0].Replace(number)
 }
