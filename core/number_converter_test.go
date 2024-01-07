@@ -19,3 +19,8 @@ func TestNumberConverter(t *testing.T) {
 	assert.Equal(t, nc.Convert(15), "FizzBuzz")
 	assert.Equal(t, nc.Convert(30), "FizzBuzz")
 }
+
+func TestNumberConverterWithEmptyRule(t *testing.T) {
+	nc := core.NumberConverter{Replacers: []core.N2SReplacer{}}
+	assert.Equal(t, nc.Convert(1), "1")
+}
