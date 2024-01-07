@@ -23,7 +23,7 @@ import (
 
 func TestNumberConverterWithEmptyRule(t *testing.T) {
 	nc := core.NumberConverter{Replacers: []core.N2SReplacer{}}
-	assert.Equal(t, nc.Convert(1), "1")
+	assert.Equal(t, nc.Convert(1), "")
 }
 
 func TestNumberConverterWithSingleRule(t *testing.T) {
@@ -33,4 +33,24 @@ func TestNumberConverterWithSingleRule(t *testing.T) {
 
 	nc := core.NumberConverter{Replacers: []core.N2SReplacer{n2sr_mock}}
 	assert.Equal(t, nc.Convert(1), "Replaced")
+}
+
+func TestNumberConverterWithFizzBuzzRule(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	nc := core.NumberConverter{Replacers: []core.N2SReplacer{createMockRule(ctrl, 1, "Fizz"), createMockRule(ctrl, 1, "Buzz")}}
+
+	assert.Equal(t, nc.Convert(1), "FizzBuzz")
+}
+
+func createMockRule(ctrl *gomock.Controller, number int, result string) core.N2SReplacer {
+	n2sr_mock := core.NewMockN2SReplacer(ctrl)
+	n2sr_mock.EXPECT().Replace(number).Return(result)
+	return n2sr_mock
+}
+
+func TestNumberConverterWithUnmachedFizzBuzzRulesAndConstantRule(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	nc := core.NumberConverter{Replacers: []core.N2SReplacer{createMockRule(ctrl, 1, ""), createMockRule(ctrl, 1, ""), createMockRule(ctrl, 1, "1")}}
+
+	assert.Equal(t, nc.Convert(1), "1")
 }

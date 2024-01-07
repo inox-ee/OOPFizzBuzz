@@ -11,8 +11,9 @@ type NumberConverter struct {
 }
 
 func (nc NumberConverter) Convert(number int) string {
-	if len(nc.Replacers) == 0 {
-		return "1"
+	result := ""
+	for _, replacer := range nc.Replacers {
+		result += replacer.Replace(number)
 	}
-	return nc.Replacers[0].Replace(number)
+	return result
 }
