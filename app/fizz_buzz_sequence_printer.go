@@ -1,21 +1,25 @@
 package app
 
-import (
-	"fmt"
-	"inoxe_e/OOP_fizzbuzz/core"
-	"inoxe_e/OOP_fizzbuzz/spec"
-)
+import "fmt"
 
-type FizzBuzzSequencePrinter struct{}
+//go:generate mockgen -source fizz_buzz_sequence_printer.go -destination fizz_buzz_sequence_printer_mock.go -package app
+
+type NumberConverter interface {
+	Convert(number int) string
+}
+
+type OutputWriter interface {
+	Write(output string) error
+}
+
+type FizzBuzzSequencePrinter struct {
+	FizzBuzz NumberConverter
+	IOWriter OutputWriter
+}
 
 func (p FizzBuzzSequencePrinter) PrintRange(start int, end int) {
-	fizzbuzz := []core.N2SReplacer{
-		spec.CyclicNumberRule{Base: 3, Replacement: "Fizz"},
-		spec.CyclicNumberRule{Base: 5, Replacement: "Buzz"},
-		spec.PassThroughRule{},
-	}
-	nc := core.NumberConverter{Replacers: fizzbuzz}
 	for i := start; i <= end; i++ {
-		fmt.Printf("%d %s\n", i, nc.Convert(i))
+		formatted_text := fmt.Sprintf("%d %s\n", i, p.FizzBuzz.Convert(i))
+		p.IOWriter.Write(formatted_text)
 	}
 }

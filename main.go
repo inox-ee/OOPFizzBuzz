@@ -1,8 +1,7 @@
 package main
 
-import "inoxe_e/OOP_fizzbuzz/app"
-
 func main() {
-	p := app.FizzBuzzSequencePrinter{}
+	factory := FizzBuzzFactory{}
+	p := factory.Create()
 	p.PrintRange(1, 100)
 }
