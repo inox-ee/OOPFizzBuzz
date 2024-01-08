@@ -38,16 +38,30 @@ func (m *MockN2SReplacer) EXPECT() *MockN2SReplacerMockRecorder {
 	return m.recorder
 }
 
-// Replace mocks base method.
-func (m *MockN2SReplacer) Replace(number int) string {
+// Apply mocks base method.
+func (m *MockN2SReplacer) Apply(carry string, number int) string {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Replace", number)
+	ret := m.ctrl.Call(m, "Apply", carry, number)
 	ret0, _ := ret[0].(string)
 	return ret0
 }
 
-// Replace indicates an expected call of Replace.
-func (mr *MockN2SReplacerMockRecorder) Replace(number any) *gomock.Call {
+// Apply indicates an expected call of Apply.
+func (mr *MockN2SReplacerMockRecorder) Apply(carry, number any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Replace", reflect.TypeOf((*MockN2SReplacer)(nil).Replace), number)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Apply", reflect.TypeOf((*MockN2SReplacer)(nil).Apply), carry, number)
+}
+
+// Match mocks base method.
+func (m *MockN2SReplacer) Match(carry string, number int) bool {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Match", carry, number)
+	ret0, _ := ret[0].(bool)
+	return ret0
+}
+
+// Match indicates an expected call of Match.
+func (mr *MockN2SReplacerMockRecorder) Match(carry, number any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Match", reflect.TypeOf((*MockN2SReplacer)(nil).Match), carry, number)
 }

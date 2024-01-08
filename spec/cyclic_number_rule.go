@@ -5,9 +5,10 @@ type CyclicNumberRule struct {
 	Replacement string
 }
 
-func (cnr CyclicNumberRule) Replace(number int) string {
-	if number%cnr.Base == 0 {
-		return cnr.Replacement
-	}
-	return ""
+func (cnr CyclicNumberRule) Match(carry string, number int) bool {
+	return cnr.Base != 0 && number%cnr.Base == 0
+}
+
+func (cnr CyclicNumberRule) Apply(carry string, number int) string {
+	return carry + cnr.Replacement
 }

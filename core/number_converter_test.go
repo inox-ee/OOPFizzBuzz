@@ -28,29 +28,45 @@ func TestNumberConverterWithEmptyRule(t *testing.T) {
 
 func TestNumberConverterWithSingleRule(t *testing.T) {
 	ctrl := gomock.NewController(t)
-	n2sr_mock := core.NewMockN2SReplacer(ctrl)
-	n2sr_mock.EXPECT().Replace(1).Return("Replaced")
+	n2sr_mock := createMockRule(ctrl, "", 0, true, "Replaced")
 
 	nc := core.NumberConverter{Replacers: []core.N2SReplacer{n2sr_mock}}
-	assert.Equal(t, nc.Convert(1), "Replaced")
+	assert.Equal(t, nc.Convert(0), "Replaced")
 }
 
 func TestNumberConverterWithFizzBuzzRule(t *testing.T) {
 	ctrl := gomock.NewController(t)
-	nc := core.NumberConverter{Replacers: []core.N2SReplacer{createMockRule(ctrl, 1, "Fizz"), createMockRule(ctrl, 1, "Buzz")}}
+	nc := core.NumberConverter{
+		Replacers: []core.N2SReplacer{
+			createMockRule(ctrl, "", 1, true, "Fizz"),
+			createMockRule(ctrl, "Fizz", 1, true, "FizzBuzz"),
+		},
+	}
 
 	assert.Equal(t, nc.Convert(1), "FizzBuzz")
 }
 
-func createMockRule(ctrl *gomock.Controller, number int, result string) core.N2SReplacer {
-	n2sr_mock := core.NewMockN2SReplacer(ctrl)
-	n2sr_mock.EXPECT().Replace(number).Return(result)
-	return n2sr_mock
+func TestNumberConverterWithSkippingUnmatchedRules(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	nc := core.NumberConverter{
+		Replacers: []core.N2SReplacer{
+			createMockRule(ctrl, "", 1, false, "Fizz"),
+			createMockRule(ctrl, "", 1, false, "Buzz"),
+			createMockRule(ctrl, "", 1, true, "1"),
+		},
+	}
+	assert.Equal(t, nc.Convert(1), "1")
 }
 
-func TestNumberConverterWithUnmachedFizzBuzzRulesAndConstantRule(t *testing.T) {
-	ctrl := gomock.NewController(t)
-	nc := core.NumberConverter{Replacers: []core.N2SReplacer{createMockRule(ctrl, 1, ""), createMockRule(ctrl, 1, ""), createMockRule(ctrl, 1, "1")}}
-
-	assert.Equal(t, nc.Convert(1), "1")
+func createMockRule(
+	ctrl *gomock.Controller,
+	expectedCarry string,
+	expectedNumber int,
+	matchResult bool,
+	replacement string,
+) core.N2SReplacer {
+	n2sr_mock := core.NewMockN2SReplacer(ctrl)
+	n2sr_mock.EXPECT().Match(expectedCarry, expectedNumber).Return(matchResult)
+	n2sr_mock.EXPECT().Apply(expectedCarry, expectedNumber).Return(replacement).AnyTimes()
+	return n2sr_mock
 }
